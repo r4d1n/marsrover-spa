@@ -14,11 +14,11 @@ class App extends Component {
     }
     Ajax.getManifest(INITIAL_ROVER)
       .then((res) => {
-        console.log(res)
+        console.log('manifest response:', res)
         return Ajax.getImagesBySol(INITIAL_ROVER, res.max_sol)
       })
       .then((res) => {
-        console.log(res)
+        console.log('photo response:',res)
         this.setState({
           photos: res.photos
         })
@@ -29,15 +29,17 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.state.photos.map(function (el) {
+        {this.state.photos.map((el) => {
           return (
             <Observation
               key={el.id}
               id={el.id}
+              img={el.img_src}
               sol={el.sol}
-              rover={el.sol}
-              camera={el.camera}
-            />
+              rover={el.rover.name}
+              camera={el.camera.name}
+              earthDate={el.earth_date}
+             />
           );
         }, this)}
       </div>
