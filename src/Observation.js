@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class Observation extends Component {
   render() {
     return (
-      <div className="item-wrapper" data-id="{id}">
+      <div className="Observation item-wrapper" data-id="{id}">
         <div className="img-container">
           <img src={this.props.img} alt={`${this.props.rover}-${this.props.camera}-${this.props.earthDate}`} className="photo"></img>
         </div>
