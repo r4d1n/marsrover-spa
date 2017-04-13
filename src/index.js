@@ -6,6 +6,6 @@ import './index.css';
 const ROVER_NAMES = ['curiosity', 'spirit', 'opportunity']
 
 ReactDOM.render(
-  <App rovers={ROVER_NAMES} />,
+  <App roverNames={ROVER_NAMES} />,
   document.getElementById('root')
 );

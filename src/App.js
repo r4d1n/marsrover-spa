@@ -7,30 +7,49 @@ import Control from './Control.js';
 class App extends Component {
   constructor(props) {
     super(props);
+    this.updateRover = this.updateRover.bind(this);
+    this.updateSol = this.updateSol.bind(this);
     this.state = {
       currentSol: 0,
-      rover: this.props.rovers[0],
+      currentRover: this.props.roverNames[0],
       availableSols: [],
       photos: []
     }
-    Ajax.getManifest(this.state.rover)
+    this.updateRover(this.state.currentRover);
+  }
+
+  updateRover(rover) {
+    if (this.state.currentRover !== rover) {
+      this.setState({ currentRover: rover })
+    }
+    Ajax.getManifest(rover)
       .then((res) => {
-        console.log('manifest response:', res)
         let availableSols = res.photos.map((el) => el.sol).reverse()
         if (availableSols.indexOf(res.max_sol) < 0) availableSols.unshift(res.max_sol) // sometimes the API data is inconsistent about this
         this.setState({
           availableSols: availableSols,
           currentSol: availableSols[0]
         })
-        return Ajax.getImagesBySol(this.state.rover, res.max_sol)
+        return Ajax.getImagesBySol(rover, res.max_sol)
       })
       .then((res) => {
-        console.log('photo response:', res)
         this.setState({
           photos: res.photos
         })
       })
       .catch(err => console.warn(err));
+  }
+
+  updateSol(sol) {
+    this.setState({ currentSol: sol })
+    Ajax.getImagesBySol(this.state.currentRover, sol)
+      .then((res) => {
+        this.setState({
+          photos: res.photos
+        })
+      })
+      .catch(err => console.warn(err))
+
   }
 
   render() {
@@ -39,9 +58,11 @@ class App extends Component {
         <Control
           currentSol={this.state.currentSol}
           solList={this.state.availableSols}
-          currentRover={this.state.rover}
-          roverList={this.props.rovers}
-         />
+          currentRover={this.state.currentRover}
+          roverList={this.props.roverNames}
+          updateRover={this.updateRover}
+          updateSol={this.updateSol}
+        />
         {this.state.photos.map((el) => {
           return (
             <Observation
@@ -52,7 +73,7 @@ class App extends Component {
               rover={el.rover.name}
               camera={el.camera.name}
               earthDate={el.earth_date}
-             />
+            />
           );
         }, this)}
       </div>
