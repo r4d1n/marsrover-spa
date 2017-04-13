@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Control.css'
 
 class Control extends Component {
 
@@ -23,14 +24,14 @@ class Control extends Component {
       <div className="Control">
         <form>
           <span>
-            rover:
+            <label name="rover-select" htmlFor="rover-select">rover:</label>
             <select value={currentRover} onChange={this.onRoverChange}>
               {this.props.roverList.map((rover) => <option key={rover}>{rover}</option>)}
             </select>
           </span>
           <span>
-            martian sol:
-            <select value={currentSol} onChange={this.onSolChange}>
+            <label htmlFor="sol-select">sol:</label>
+            <select name="sol-select" value={currentSol} onChange={this.onSolChange}>
               {this.props.solList.map((sol) => <option key={sol}>{sol}</option>)}
             </select>
           </span>

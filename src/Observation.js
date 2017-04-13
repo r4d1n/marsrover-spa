@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import './Observation.css'
 
 class Observation extends Component {
   render() {
     return (
-      <div className="Observation item-wrapper" data-id="{id}">
+      <div className="Observation" data-id="{id}">
         <div className="img-container">
           <img src={this.props.img} alt={`${this.props.rover}-${this.props.camera}-${this.props.earthDate}`} className="photo"></img>
         </div>
@@ -15,9 +16,6 @@ class Observation extends Component {
             <li>rover: {this.props.rover}</li>
             <li>camera: {this.props.camera}</li>
           </ul>
-        </div>
-        <div className="btn-container">
-          <ul></ul>
         </div>
       </div>
     )

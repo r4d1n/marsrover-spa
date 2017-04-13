@@ -1,0 +1,53 @@
+.Observation {
+  margin: 0 auto;
+  width: 90%;
+  max-width: 800px;
+}
+
+/* image and metadata layout */
+
+.Observation div.img-container {
+  margin: 2em auto;
+  max-width: 400px;
+  height: 400px;
+  width: 90%;
+  background-color: #999;
+}
+
+.Observation div.img-container img.photo {
+  width: 100%;
+  max-height: 400px;
+}
+
+.Observation div.metadata {
+  margin: 0 auto;
+  font-size: 1em;
+  max-width: 400px;
+  width: 90%;
+}
+
+.Observation div.metadata > ul {
+  width: inherit;
+  height: inherit;
+}
+
+.metadata > ul > li {
+  padding-bottom: 0.25em;
+}
+
+/* media queries */
+
+@media (max-width: 700px) {
+  div.img-container {
+    margin: 2em auto;
+    max-width: 400px;
+    height: 300px;
+    width: 90%;
+  }
+
+  img.photo {
+    width: 100%;
+    max-height: 300px;
+  }
+
+}
