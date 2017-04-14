@@ -7,8 +7,8 @@
 }
 
 .Control form {
-  height: inherit;
-  padding: 2em;
+  margin: 0 auto;
+  padding-top: 2em;
 }
 
 .Control form span {
@@ -18,4 +18,8 @@
 
 .Control form label {
   padding-right: 1em;
+}
+
+.Control form select {
+  border: 1px solid #000000;
 }

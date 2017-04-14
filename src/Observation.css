@@ -9,9 +9,7 @@
 .Observation div.img-container {
   margin: 2em auto;
   max-width: 400px;
-  height: 400px;
   width: 90%;
-  background-color: #999;
 }
 
 .Observation div.img-container img.photo {
@@ -41,7 +39,6 @@
   div.img-container {
     margin: 2em auto;
     max-width: 400px;
-    height: 300px;
     width: 90%;
   }
 
