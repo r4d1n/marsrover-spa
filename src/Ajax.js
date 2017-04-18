@@ -23,6 +23,7 @@ function getData(uri) {
   })
   .then(checkStatus)
   .then((res) => res.json())
+  .catch((err) => console.log(`error ${err.status} fetching ${uri}`))
 }
 
 function checkStatus(res) {

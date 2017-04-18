@@ -49,7 +49,6 @@ class App extends Component {
         })
       })
       .catch(err => console.warn(err))
-
   }
 
   render() {
