@@ -6,7 +6,10 @@ import {
   SELECT_ROVER, SELECT_SOL
 } from './actions';
 
-const selectedRover = (state = 'curiosity', action) => {
+const INIT_ROVER = 'curiosity';
+const INIT_SOL = 1000;
+
+const selectedRover = (state = INIT_ROVER, action) => {
   switch (action.type) {
     case SELECT_ROVER:
       return action.rover
@@ -15,7 +18,14 @@ const selectedRover = (state = 'curiosity', action) => {
   }
 }
 
-const imgs = (state, action) => {
+const imgs = (state = {
+  availableSols: [],
+  photosBySol: {
+    [INIT_SOL]: []
+  },
+  selectedSol: INIT_SOL,
+  isFetching: false
+}, action) => {
   switch (action.type) {
     case REQUEST_MANIFEST:
       return {
@@ -59,8 +69,7 @@ function roverData(state = {}, action) {
     case RECEIVE_MANIFEST:
     case RECEIVE_SOL:
     case REQUEST_SOL:
-      console.log(state)
-      return Object.assign({}, state, {
+     return Object.assign({}, state, {
         [action.rover]: imgs(state[action.rover], action)
       })
     default:

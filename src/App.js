@@ -1,10 +1,12 @@
 import './App.css';
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import Control from './Control.js';
 import ObservationList from './ObservationList.js';
 
 import { selectRover, selectSol, fetchManifest, fetchSol } from './lib/actions';
+
+const availableRovers = ['curiosity', 'spirit', 'opportunity'];
 
 class App extends Component {
   componentDidMount() {
@@ -20,33 +22,50 @@ class App extends Component {
     }
   }
 
-  updateRover(rover) {
+  updateRover = rover => {
     this.props.dispatch(selectRover(rover))
   }
 
-  updateSol(sol) {
+  updateSol = sol => {
     this.props.dispatch(selectSol(sol))
   }
 
   render() {
-    console.log('######################### PROPS', this.props)
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$ STATE', this.state)
-    debugger
     return (
       <div className="App">
-        <div className="loading-screen" />
         <Control
           selectedSol={this.props.selectedSol}
-          solList={this.props.availableSols}
+          availableSols={this.props.availableSols}
           selectedRover={this.props.selectedRover}
-          roverList={this.props.roverNames}
+          availableRovers={this.props.availableRovers}
           updateRover={this.updateRover}
           updateSol={this.updateSol}
         />
-        {/*<ObservationList />*/}
+        <ObservationList photos={this.props.photos} />
       </div>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  const { selectedRover } = state;
+  const {
+    availableSols,
+    selectedSol,
+    photosBySol,
+    isFetching,
+    lastUpdated
+  } = state.roverData[selectedRover];
+  const photos = photosBySol[selectedSol] || [];
+  return {
+    selectedRover,
+    selectedSol,
+    availableSols,
+    availableRovers,
+    photos,
+    isFetching,
+    lastUpdated
+  };
+}
+
+export default connect(mapStateToProps)(App);
