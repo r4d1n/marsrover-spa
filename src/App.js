@@ -1,8 +1,8 @@
 import './App.css';
 import React, { Component } from 'react';
 
-import Observation from './Observation.js';
 import Control from './Control.js';
+import ObservationList from './ObservationList.js';
 
 import { selectRover, selectSol, fetchManifest, fetchSol } from './lib/actions';
 
@@ -29,6 +29,9 @@ class App extends Component {
   }
 
   render() {
+    console.log('######################### PROPS', this.props)
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$ STATE', this.state)
+    debugger
     return (
       <div className="App">
         <div className="loading-screen" />
@@ -40,19 +43,7 @@ class App extends Component {
           updateRover={this.updateRover}
           updateSol={this.updateSol}
         />
-        {this.state.photos.map((el) => {
-          return (
-            <Observation
-              key={el.id}
-              id={el.id}
-              img={el.img_src}
-              sol={el.sol}
-              rover={el.rover.name}
-              camera={el.camera.name}
-              earthDate={el.earth_date}
-            />
-          );
-        }, this)}
+        {/*<ObservationList />*/}
       </div>
     );
   }

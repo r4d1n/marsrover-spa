@@ -29,10 +29,12 @@ function requestManifest(rover) {
 }
 
 function receiveManifest(json) {
+  let rover = json.name.toLowerCase();
   let availableSols = json.photos.map((el) => el.sol).reverse()
   if (availableSols.indexOf(json.max_sol) < 0) availableSols.unshift(json.max_sol) // sometimes the API data is inconsistent about this
   return {
     type: RECEIVE_MANIFEST,
+    rover,
     availableSols,
     selectedSol: availableSols[0],
     receivedAt: Date.now()
@@ -50,19 +52,21 @@ function requestSol(sol) {
   }
 }
 
-function receiveSol(json) {
+function receiveSol(sol, json) {
   return (dispatch, getState) => {
     let rover = getState().selectedRover;
     dispatch({
       type: RECEIVE_SOL,
       receivedAt: Date.now(),
-      rover
+      photos: json.photos,
+      rover,
+      sol
     });
   }
 }
 
 function shouldFetchManifest(state, rover) {
-  const roverState = state.solsByRover[rover];
+  const roverState = state.roverData[rover];
   if (!roverState) {
     return true
   } else {
@@ -82,20 +86,20 @@ export function fetchManifest(rover) {
 }
 
 
-function shouldfetchSol(state, rover) {
-  const roverState = state.solsByRover[rover];
-  if (!roverState) {
+function shouldfetchSol(state, rover, sol) {
+  const solState = state.roverData[rover][sol];
+  if (!solState) {
     return true
   } else {
     return false
   }
 }
 
-export function fetchSol(sol) {
+export function fetchSol(rover, sol) {
   return function (dispatch, getState) {
-    if (shouldfetchSol(getState(), sol)) {
+    if (shouldfetchSol(getState(), rover, sol)) {
       dispatch(requestSol(sol));
-      return network.getImagesBySol(getState().selectedRover, sol).then(json => dispatch(receiveSol(json)));
+      return network.getImagesBySol(rover, sol).then(json => dispatch(receiveSol(sol, json)));
     } else {
       return Promise.resolve()
     }

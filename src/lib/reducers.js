@@ -6,7 +6,6 @@ import {
   SELECT_ROVER, SELECT_SOL
 } from './actions';
 
-
 const selectedRover = (state = 'curiosity', action) => {
   switch (action.type) {
     case SELECT_ROVER:
@@ -16,12 +15,7 @@ const selectedRover = (state = 'curiosity', action) => {
   }
 }
 
-const sols = (state = {
-  isFetching: false,
-  availableSols: [],
-  photos: [],
-  selected: 1000
-}, action) => {
+const imgs = (state, action) => {
   switch (action.type) {
     case REQUEST_MANIFEST:
       return {
@@ -45,6 +39,9 @@ const sols = (state = {
       return {
         ...state,
         isFetching: false,
+        photosBySol: {
+          [action.sol]: action.photos
+        }
       }
     case SELECT_SOL:
       return {
@@ -56,22 +53,24 @@ const sols = (state = {
   }
 }
 
-function solsByRover(state = {}, action) {
+function roverData(state = {}, action) {
   switch (action.type) {
+    case REQUEST_MANIFEST:
+    case RECEIVE_MANIFEST:
     case RECEIVE_SOL:
     case REQUEST_SOL:
+      console.log(state)
       return Object.assign({}, state, {
-        [action.rover]: sols(state[action.rover], action)
+        [action.rover]: imgs(state[action.rover], action)
       })
     default:
       return state
   }
 }
 
-
 const rootReducer = combineReducers({
   selectedRover,
-  solsByRover
+  roverData
 })
 
 export default rootReducer;
