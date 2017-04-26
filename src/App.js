@@ -4,12 +4,13 @@ import React, { Component } from 'react';
 import Observation from './Observation.js';
 import Control from './Control.js';
 
-import { selectRover, selectSol, fetchManifest } from './lib/actions';
+import { selectRover, selectSol, fetchManifest, fetchSol } from './lib/actions';
 
 class App extends Component {
-   componentDidMount() {
-    const { dispatch, selectedRover } = this.props;
-    dispatch(fetchManifest(selectedRover));
+  componentDidMount() {
+    const { dispatch, selectedRover, selectedSol } = this.props;
+    dispatch(fetchManifest(selectedRover))
+      .then(() => dispatch(fetchSol(selectedRover, selectedSol)));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -32,9 +33,9 @@ class App extends Component {
       <div className="App">
         <div className="loading-screen" />
         <Control
-          currentSol={this.state.currentSol}
-          solList={this.state.availableSols}
-          currentRover={this.state.currentRover}
+          selectedSol={this.props.selectedSol}
+          solList={this.props.availableSols}
+          selectedRover={this.props.selectedRover}
           roverList={this.props.roverNames}
           updateRover={this.updateRover}
           updateSol={this.updateSol}

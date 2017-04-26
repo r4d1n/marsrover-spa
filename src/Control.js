@@ -20,8 +20,8 @@ class Control extends Component {
   }
 
   render() {
-    const currentRover = this.props.currentRover;
-    const currentSol = this.props.currentSol;
+    const currentRover = this.props.selectedRover;
+    const currentSol = this.props.selectedSol;
     return (
       <div className="Control">
         <form>
@@ -34,7 +34,7 @@ class Control extends Component {
           <span>
             <label htmlFor="sol-select">sol:</label>
             <select name="sol-select" value={currentSol} onChange={this.onSolChange}>
-              {this.props.solList.map((sol) => <option key={sol}>{sol}</option>)}
+              {this.props.availableSols.map((sol) => <option key={sol}>{sol}</option>)}
             </select>
           </span>
         </form>

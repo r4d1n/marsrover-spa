@@ -2,10 +2,24 @@ import network from './network';
 
 export const REQUEST_MANIFEST = 'REQUEST_MANIFEST';
 export const RECEIVE_MANIFEST = 'RECEIVE_MANIFEST';
-export const REQUEST_IMG_DATA = 'REQUEST_IMG_DATA';
-export const RECEIVE_IMG_DATA = 'RECEIVE_IMG_DATA';
+export const REQUEST_SOL = 'REQUEST_SOL';
+export const RECEIVE_SOL = 'RECEIVE_SOL';
 export const SELECT_ROVER = 'SELECT_ROVER';
 export const SELECT_SOL = 'SELECT_SOL';
+
+export function selectRover(rover) {
+  return {
+    type: SELECT_ROVER,
+    rover
+  }
+}
+
+export function selectSol(sol) {
+  return {
+    type: SELECT_SOL,
+    sol
+  }
+}
 
 function requestManifest(rover) {
   return {
@@ -25,17 +39,34 @@ function receiveManifest(json) {
   }
 }
 
-export function selectRover(rover) {
-  return {
-    type: SELECT_ROVER,
-    rover
+function requestSol(sol) {
+  return (dispatch, getState) => {
+    let rover = getState().selectedRover;
+    dispatch({
+      type: REQUEST_SOL,
+      sol,
+      rover
+    });
   }
 }
 
-export function selectSol(sol) {
-  return {
-    type: SELECT_SOL,
-    sol
+function receiveSol(json) {
+  return (dispatch, getState) => {
+    let rover = getState().selectedRover;
+    dispatch({
+      type: RECEIVE_SOL,
+      receivedAt: Date.now(),
+      rover
+    });
+  }
+}
+
+function shouldFetchManifest(state, rover) {
+  const roverState = state.solsByRover[rover];
+  if (!roverState) {
+    return true
+  } else {
+    return false
   }
 }
 
@@ -50,13 +81,25 @@ export function fetchManifest(rover) {
   }
 }
 
-function shouldFetchManifest(state, rover) {
+
+function shouldfetchSol(state, rover) {
   const roverState = state.solsByRover[rover];
-  debugger
   if (!roverState) {
     return true
   } else {
     return false
   }
 }
+
+export function fetchSol(sol) {
+  return function (dispatch, getState) {
+    if (shouldfetchSol(getState(), sol)) {
+      dispatch(requestSol(sol));
+      return network.getImagesBySol(getState().selectedRover, sol).then(json => dispatch(receiveSol(json)));
+    } else {
+      return Promise.resolve()
+    }
+  }
+}
+
 
