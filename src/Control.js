@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './Control.css'
 
+const ROVER_NAMES = ['curiosity', 'spirit', 'opportunity']
+
 class Control extends Component {
 
   constructor(props) {
@@ -26,7 +28,7 @@ class Control extends Component {
           <span>
             <label name="rover-select" htmlFor="rover-select">rover:</label>
             <select value={currentRover} onChange={this.onRoverChange}>
-              {this.props.roverList.map((rover) => <option key={rover}>{rover}</option>)}
+              {ROVER_NAMES.map((rover) => <option key={rover}>{rover}</option>)}
             </select>
           </span>
           <span>

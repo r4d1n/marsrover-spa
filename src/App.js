@@ -1,59 +1,36 @@
-import React, { Component } from 'react';
 import './App.css';
-import Ajax from './Ajax.js';
+import React, { Component } from 'react';
+
 import Observation from './Observation.js';
 import Control from './Control.js';
 
+import { selectRover, selectSol, fetchManifest } from './lib/actions';
+
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.updateRover = this.updateRover.bind(this);
-    this.updateSol = this.updateSol.bind(this);
-    this.state = {
-      currentSol: 0,
-      currentRover: this.props.roverNames[0],
-      availableSols: [],
-      photos: []
+   componentDidMount() {
+    const { dispatch, selectedRover } = this.props;
+    dispatch(fetchManifest(selectedRover));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.selectedRover !== this.props.selectedRover) {
+      const { dispatch, selectedRover } = nextProps;
+      dispatch(fetchManifest(selectedRover));
     }
-    this.updateRover(this.state.currentRover);
   }
 
   updateRover(rover) {
-    if (this.state.currentRover !== rover) {
-      this.setState({ currentRover: rover })
-    }
-    Ajax.getManifest(rover)
-      .then((res) => {
-        let availableSols = res.photos.map((el) => el.sol).reverse()
-        if (availableSols.indexOf(res.max_sol) < 0) availableSols.unshift(res.max_sol) // sometimes the API data is inconsistent about this
-        this.setState({
-          availableSols: availableSols,
-          currentSol: availableSols[0]
-        })
-        return Ajax.getImagesBySol(rover, res.max_sol)
-      })
-      .then((res) => {
-        this.setState({
-          photos: res.photos
-        })
-      })
-      .catch(err => console.warn(err));
+    this.props.dispatch(selectRover(rover))
   }
 
   updateSol(sol) {
-    this.setState({ currentSol: sol })
-    Ajax.getImagesBySol(this.state.currentRover, sol)
-      .then((res) => {
-        this.setState({
-          photos: res.photos
-        })
-      })
-      .catch(err => console.warn(err))
+    this.props.dispatch(selectSol(sol))
   }
 
   render() {
     return (
       <div className="App">
+        <div className="loading-screen" />
         <Control
           currentSol={this.state.currentSol}
           solList={this.state.availableSols}
