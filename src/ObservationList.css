@@ -1,0 +1,22 @@
+.ObservationList .loading-screen {
+  position: fixed;
+  top: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.ObservationList .loading-screen.active {
+  display: block;
+  opacity: .7;
+  animation-name: loading;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes loading {
+    0%   {background-color: #ffffff;}
+    50%   {background-color: red;}
+    100%   {background-color: #ffffff;}
+}

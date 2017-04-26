@@ -1,83 +1,75 @@
-import React, { Component } from 'react';
 import './App.css';
-import Ajax from './Ajax.js';
-import Observation from './Observation.js';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Control from './Control.js';
+import ObservationList from './ObservationList.js';
+
+import { selectRover, selectSol, fetchManifest, fetchSol } from './lib/actions';
+
+const availableRovers = ['curiosity', 'spirit', 'opportunity'];
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.updateRover = this.updateRover.bind(this);
-    this.updateSol = this.updateSol.bind(this);
-    this.state = {
-      currentSol: 0,
-      currentRover: this.props.roverNames[0],
-      availableSols: [],
-      photos: []
-    }
-    this.updateRover(this.state.currentRover);
+  componentDidMount() {
+    const { dispatch, selectedRover, selectedSol } = this.props;
+    dispatch(fetchManifest(selectedRover))
+      .then(() => dispatch(fetchSol(selectedRover, selectedSol)));
   }
 
-  updateRover(rover) {
-    if (this.state.currentRover !== rover) {
-      this.setState({ currentRover: rover })
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.selectedRover !== this.props.selectedRover) {
+      const { dispatch, selectedRover } = nextProps;
+      dispatch(fetchManifest(selectedRover));
     }
-    Ajax.getManifest(rover)
-      .then((res) => {
-        let availableSols = res.photos.map((el) => el.sol).reverse()
-        if (availableSols.indexOf(res.max_sol) < 0) availableSols.unshift(res.max_sol) // sometimes the API data is inconsistent about this
-        this.setState({
-          availableSols: availableSols,
-          currentSol: availableSols[0]
-        })
-        return Ajax.getImagesBySol(rover, res.max_sol)
-      })
-      .then((res) => {
-        this.setState({
-          photos: res.photos
-        })
-      })
-      .catch(err => console.warn(err));
   }
 
-  updateSol(sol) {
-    this.setState({ currentSol: sol })
-    Ajax.getImagesBySol(this.state.currentRover, sol)
-      .then((res) => {
-        this.setState({
-          photos: res.photos
-        })
-      })
-      .catch(err => console.warn(err))
+  updateRover = rover => {
+    this.props.dispatch(selectRover(rover))
+  }
+
+  updateSol = sol => {
+    this.props.dispatch(selectSol(sol))
   }
 
   render() {
     return (
       <div className="App">
         <Control
-          currentSol={this.state.currentSol}
-          solList={this.state.availableSols}
-          currentRover={this.state.currentRover}
-          roverList={this.props.roverNames}
+          currentSol={this.props.selectedSol}
+          availableSols={this.props.availableSols}
+          currentRover={this.props.selectedRover}
+          availableRovers={this.props.availableRovers}
           updateRover={this.updateRover}
           updateSol={this.updateSol}
         />
-        {this.state.photos.map((el) => {
-          return (
-            <Observation
-              key={el.id}
-              id={el.id}
-              img={el.img_src}
-              sol={el.sol}
-              rover={el.rover.name}
-              camera={el.camera.name}
-              earthDate={el.earth_date}
-            />
-          );
-        }, this)}
+        <ObservationList photos={this.props.photos} />
       </div>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  let selectedRover = state.selected.rover;
+  let selectedSol = state.selected.sol;
+  const {
+    availableSols,
+    photosBySol,
+    isFetching,
+    lastUpdated
+  } = state.data[selectedRover] || {
+   availableSols: [],
+   photosBySol: {},
+   isFetching: false
+  };
+  const photos = photosBySol[selectedSol] || [];
+  return {
+    selectedRover,
+    selectedSol,
+    availableSols,
+    availableRovers,
+    photos,
+    isFetching,
+    lastUpdated
+  };
+}
+
+export default connect(mapStateToProps)(App);

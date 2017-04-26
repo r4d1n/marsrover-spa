@@ -1,25 +1,23 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './Observation.css'
 
-class Observation extends Component {
-  render() {
-    return (
-      <div className="Observation" data-id="{id}">
-        <div className="img-container">
-          <img src={this.props.img} alt={`${this.props.rover}-${this.props.camera}-${this.props.earthDate}`} className="photo"></img>
-        </div>
-        <div className="metadata">
-          <ul>
-            <li>image id: {this.props.id}</li>
-            <li>martian sol: {this.props.sol}</li>
-            <li>earth date: {this.props.earthDate}</li>
-            <li>rover: {this.props.rover}</li>
-            <li>camera: {this.props.camera}</li>
-          </ul>
-        </div>
+function Observation(props) {
+  return (
+    <div className="Observation" data-id="{id}">
+      <div className="img-container">
+        <img src={props.img} alt={`${props.rover}-${props.camera}-${props.earthDate}`} className="photo"></img>
       </div>
-    )
-  }
+      <div className="metadata">
+        <ul>
+          <li>image id: {props.id}</li>
+          <li>martian sol: {props.sol}</li>
+          <li>earth date: {props.earthDate}</li>
+          <li>rover: {props.rover}</li>
+          <li>camera: {props.camera}</li>
+        </ul>
+      </div>
+    </div>
+  )
 }
 
 export default Observation;
