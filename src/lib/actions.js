@@ -7,10 +7,27 @@ export const RECEIVE_SOL = 'RECEIVE_SOL';
 export const SELECT_ROVER = 'SELECT_ROVER';
 export const SELECT_SOL = 'SELECT_SOL';
 
+function updateRover(rover) {
+  return function (dispatch, getState) {
+    if (shouldFetchManifest(getState(), rover)) {
+      dispatch(requestManifest(rover));
+      return network.getManifest(rover)
+        .then(json => dispatch(receiveManifest(json)))
+        .then(() => dispatch(requestSol(getState().selected.sol)));
+    } else {
+      return Promise.resolve();
+    }
+  }
+}
+
+
 export function selectRover(rover) {
-  return {
-    type: SELECT_ROVER,
-    rover
+  return function (dispatch, getState) {
+    dispatch(updateRover(rover));
+    return {
+      type: SELECT_ROVER,
+      rover
+    }
   }
 }
 
@@ -29,6 +46,7 @@ function requestManifest(rover) {
 }
 
 function receiveManifest(json) {
+  if (!json) return
   let rover = json.name.toLowerCase();
   let availableSols = json.photos.map((el) => el.sol).reverse()
   if (availableSols.indexOf(json.max_sol) < 0) availableSols.unshift(json.max_sol) // sometimes the API data is inconsistent about this
@@ -36,14 +54,13 @@ function receiveManifest(json) {
     type: RECEIVE_MANIFEST,
     rover,
     availableSols,
-    selectedSol: availableSols[0],
     receivedAt: Date.now()
   }
 }
 
 function requestSol(sol) {
   return (dispatch, getState) => {
-    let rover = getState().selectedRover;
+    let rover = getState().selected.rover;
     dispatch({
       type: REQUEST_SOL,
       sol,
@@ -53,8 +70,9 @@ function requestSol(sol) {
 }
 
 function receiveSol(sol, json) {
+  if (!json) throw new Error(`error receiving sol, data is ${json}`);
   return (dispatch, getState) => {
-    let rover = getState().selectedRover;
+    let rover = getState().selected.rover;
     dispatch({
       type: RECEIVE_SOL,
       receivedAt: Date.now(),
@@ -66,7 +84,7 @@ function receiveSol(sol, json) {
 }
 
 function shouldFetchManifest(state, rover) {
-  const roverState = state.roverData[rover];
+  const roverState = state.data[rover];
   if (!roverState) {
     return true
   } else {
@@ -87,7 +105,7 @@ export function fetchManifest(rover) {
 
 
 function shouldfetchSol(state, rover, sol) {
-  const solState = state.roverData[rover][sol];
+  const solState = state.data[rover][sol];
   if (!solState) {
     return true
   } else {
@@ -101,7 +119,7 @@ export function fetchSol(rover, sol) {
       dispatch(requestSol(sol));
       return network.getImagesBySol(rover, sol).then(json => dispatch(receiveSol(sol, json)));
     } else {
-      return Promise.resolve()
+      return Promise.resolve();
     }
   }
 }

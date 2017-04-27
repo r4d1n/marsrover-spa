@@ -21,9 +21,11 @@ const store = createStore(
   applyMiddleware(...middleware)
 );
 
-store.dispatch(fetchManifest('curiosity'))
+const { rover, sol } = store.getState().selected;
+
+store.dispatch(fetchManifest(rover))
   .then(() => {
-    store.dispatch(fetchSol('curiosity', 1000))
+    return store.dispatch(fetchSol(rover, sol));
   })
   .then(() => {
     ReactDOM.render(

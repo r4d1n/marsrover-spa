@@ -34,9 +34,9 @@ class App extends Component {
     return (
       <div className="App">
         <Control
-          selectedSol={this.props.selectedSol}
+          currentSol={this.props.selectedSol}
           availableSols={this.props.availableSols}
-          selectedRover={this.props.selectedRover}
+          currentRover={this.props.selectedRover}
           availableRovers={this.props.availableRovers}
           updateRover={this.updateRover}
           updateSol={this.updateSol}
@@ -48,14 +48,18 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-  const { selectedRover } = state;
+  let selectedRover = state.selected.rover;
+  let selectedSol = state.selected.sol;
   const {
     availableSols,
-    selectedSol,
     photosBySol,
     isFetching,
     lastUpdated
-  } = state.roverData[selectedRover];
+  } = state.data[selectedRover] || {
+   availableSols: [],
+   photosBySol: {},
+   isFetching: false
+  };
   const photos = photosBySol[selectedSol] || [];
   return {
     selectedRover,
