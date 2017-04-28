@@ -7,32 +7,27 @@ export const RECEIVE_SOL = 'RECEIVE_SOL';
 export const SELECT_ROVER = 'SELECT_ROVER';
 export const SELECT_SOL = 'SELECT_SOL';
 
-function updateRover(rover) {
-  return function (dispatch, getState) {
-    if (shouldFetchManifest(getState(), rover)) {
-      dispatch(requestManifest(rover));
-      return network.getManifest(rover)
-        .then(json => dispatch(receiveManifest(json)))
-        .then(() => dispatch(requestSol(getState().selected.sol)));
-    } else {
-      return Promise.resolve();
-    }
-  }
-}
-
-
 export function selectRover(rover) {
-  debugger
-  return {
-    type: SELECT_ROVER,
-    rover
+  return function (dispatch, getState) {
+    dispatch({
+      type: SELECT_ROVER,
+      rover
+    });
+    return dispatch(fetchManifest(rover))
+      .then((action) => {
+        console.log(action, getState())
+        return dispatch(selectSol(action.availableSols[0]));
+      });
   }
 }
 
 export function selectSol(sol) {
-  return {
-    type: SELECT_SOL,
-    sol
+  return function (dispatch, getState) {
+    dispatch({
+      type: SELECT_SOL,
+      sol
+    });
+    return dispatch(fetchSol(getState().selected.rover, sol));
   }
 }
 
@@ -48,7 +43,6 @@ function receiveManifest(json) {
   let rover = json.name.toLowerCase();
   let availableSols = json.photos.map((el) => el.sol).reverse()
   if (availableSols.indexOf(json.max_sol) < 0) availableSols.unshift(json.max_sol) // sometimes the API data is inconsistent about this
-  debugger
   return {
     type: RECEIVE_MANIFEST,
     rover,
@@ -118,7 +112,7 @@ export function fetchSol(rover, sol) {
       dispatch(requestSol(sol));
       return network.getImagesBySol(rover, sol).then(json => dispatch(receiveSol(sol, json)));
     } else {
-      return Promise.resolve();
+      return Promise.resolve(dispatch(receiveSol(sol, getState().data[rover])));
     }
   }
 }

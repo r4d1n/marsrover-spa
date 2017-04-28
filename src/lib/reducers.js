@@ -16,7 +16,6 @@ const selected = (state = {
   action) => {
   switch (action.type) {
     case SELECT_ROVER:
-      debugger
       return {
         ...state,
         rover: action.rover
@@ -50,7 +49,6 @@ const imgs = (state = {
         ...state,
         isFetching: false,
         availableSols: action.availableSols,
-        selectedSol: action.selectedSol,
         lastUpdate: action.receivedAt
       }
     case REQUEST_SOL:
@@ -78,7 +76,7 @@ function data(state = {}, action) {
     case RECEIVE_MANIFEST:
     case REQUEST_SOL:
     case RECEIVE_SOL:
-      debugger
+      // debugger
       return Object.assign({}, state, {
         [action.rover]: imgs(state[action.rover], action)
       })
