@@ -4,7 +4,6 @@ import Observation from './Observation.js';
 
 function ObservationList(props) {
   const { photos } = props;
-  // debugger
   return (
     <div className='ObservationList'>
       <div className="loading-screen" />

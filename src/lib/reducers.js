@@ -76,7 +76,6 @@ function data(state = {}, action) {
     case RECEIVE_MANIFEST:
     case REQUEST_SOL:
     case RECEIVE_SOL:
-      // debugger
       return Object.assign({}, state, {
         [action.rover]: imgs(state[action.rover], action)
       })
