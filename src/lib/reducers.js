@@ -7,7 +7,7 @@ import {
 } from './actions';
 
 const INIT_ROVER = 'curiosity';
-const INIT_SOL = 1000;
+const INIT_SOL = 1;
 
 const selected = (state = {
   rover: INIT_ROVER,

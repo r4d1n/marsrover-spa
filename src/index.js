@@ -9,6 +9,7 @@ import { createLogger } from 'redux-logger';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './lib/reducers';
+import { selectRover } from './lib/actions';
 
 const middleware = [thunk]
 if (process.env.NODE_ENV !== 'production') {
@@ -20,9 +21,12 @@ const store = createStore(
   applyMiddleware(...middleware)
 );
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-);
+store.dispatch(selectRover(store.getState().selected.rover))
+  .then(() => {
+    ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      document.getElementById('root')
+    );
+  });

@@ -15,8 +15,8 @@ export function selectRover(rover) {
     });
     return dispatch(fetchManifest(rover))
       .then((action) => {
-        console.log(action, getState())
-        return dispatch(selectSol(action.availableSols[0]));
+        let sol = (action && action.availableSols.length) ? action.availableSols[0] : getState().data[rover].availableSols[0];
+        if (sol) return dispatch(selectSol(sol));
       });
   }
 }
@@ -112,7 +112,7 @@ export function fetchSol(rover, sol) {
       dispatch(requestSol(sol));
       return network.getImagesBySol(rover, sol).then(json => dispatch(receiveSol(sol, json)));
     } else {
-      return Promise.resolve(dispatch(receiveSol(sol, getState().data[rover])));
+      return Promise.resolve();
     }
   }
 }
