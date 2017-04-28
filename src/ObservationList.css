@@ -11,12 +11,16 @@
   display: block;
   opacity: .7;
   animation-name: loading;
-  animation-duration: 5s;
+  animation-duration: 3s;
   animation-iteration-count: infinite;
 }
 
 @keyframes loading {
     0%   {background-color: #ffffff;}
-    50%   {background-color: red;}
-    100%   {background-color: #ffffff;}
+    100%   {background-color: #666666;}
+}
+
+.ObservationList .loading-screen p {
+  margin: 5em auto;
+  font-size: 3em;
 }

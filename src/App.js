@@ -41,7 +41,7 @@ class App extends Component {
           updateRover={this.updateRover}
           updateSol={this.updateSol}
         />
-        <ObservationList photos={this.props.photos} />
+        <ObservationList photos={this.props.photos} isFetching={this.props.isFetching} />
       </div>
     );
   }

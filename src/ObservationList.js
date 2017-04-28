@@ -4,9 +4,12 @@ import Observation from './Observation.js';
 
 function ObservationList(props) {
   const { photos } = props;
+  const activeClass = props.isFetching ? 'active' : '';
   return (
     <div className='ObservationList'>
-      <div className="loading-screen" />
+      <div className={`loading-screen ${activeClass}`}>
+        <p>Loading...</p>
+      </div>
       {
         photos.map((el) => {
           return (
