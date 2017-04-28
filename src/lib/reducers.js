@@ -16,9 +16,15 @@ const selected = (state = {
   action) => {
   switch (action.type) {
     case SELECT_ROVER:
+      debugger
       return {
-        rover: action.rover,
-        sol: action.availableSols[0]
+        ...state,
+        rover: action.rover
+      }
+    case SELECT_SOL:
+      return {
+        ...state,
+        sol: action.sol
       }
     default:
       return state
@@ -60,11 +66,7 @@ const imgs = (state = {
           [action.sol]: action.photos
         })
       }
-    case SELECT_SOL:
-      return {
-        ...state,
-        selected: action.sol
-      }
+
     default:
       return state
   }
@@ -76,6 +78,7 @@ function data(state = {}, action) {
     case RECEIVE_MANIFEST:
     case REQUEST_SOL:
     case RECEIVE_SOL:
+      debugger
       return Object.assign({}, state, {
         [action.rover]: imgs(state[action.rover], action)
       })

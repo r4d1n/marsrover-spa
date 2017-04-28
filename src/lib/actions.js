@@ -22,12 +22,10 @@ function updateRover(rover) {
 
 
 export function selectRover(rover) {
-  return function (dispatch, getState) {
-    dispatch(updateRover(rover));
-    return {
-      type: SELECT_ROVER,
-      rover
-    }
+  debugger
+  return {
+    type: SELECT_ROVER,
+    rover
   }
 }
 
@@ -50,6 +48,7 @@ function receiveManifest(json) {
   let rover = json.name.toLowerCase();
   let availableSols = json.photos.map((el) => el.sol).reverse()
   if (availableSols.indexOf(json.max_sol) < 0) availableSols.unshift(json.max_sol) // sometimes the API data is inconsistent about this
+  debugger
   return {
     type: RECEIVE_MANIFEST,
     rover,
