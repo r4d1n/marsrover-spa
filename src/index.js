@@ -1,5 +1,7 @@
 import './reset.css';
 import './index.css';
+import registerServiceWorker from './registerServiceWorker';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
@@ -30,3 +32,4 @@ store.dispatch(selectRover(store.getState().selected.rover))
       document.getElementById('root')
     );
   });
+registerServiceWorker();
